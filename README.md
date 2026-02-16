@@ -170,4 +170,5 @@ pip freeze > requirements.txt
 ## Author
 
 Name: Shaheen Begum
+
 Project: Infosys Springboard RAG Project
