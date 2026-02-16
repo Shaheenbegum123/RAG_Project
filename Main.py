@@ -1,0 +1,161 @@
+import os
+import warnings
+warnings.filterwarnings("ignore")
+
+os.environ["USER_AGENT"] = "rag-app"
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+
+
+
+# 1. LOAD MULTIPLE PDFs
+
+pdf_files = [
+    "Books/Building Machine Learning Systems with Python.pdf",
+    "Books/Introduction to Machine Learning with Python ( PDFDrive.com )-min.pdf",
+    "Books/Practical Machine Learning with Python.pdf"
+]
+
+docs = []
+
+print("Loading PDFs...")
+
+for pdf in pdf_files:
+    if os.path.exists(pdf):
+        loader = PyPDFLoader(pdf)
+        docs.extend(loader.load())
+        print(f"Loaded: {pdf}")
+    else:
+        print(f"File not found: {pdf}")
+
+print(f"\nTotal pages loaded: {len(docs)}")
+
+
+# 2. SPLIT INTO CHUNKS
+
+print("\nSplitting documents...")
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=400,
+    chunk_overlap=40
+)
+
+chunks = text_splitter.split_documents(docs)
+
+print(f"Total chunks created: {len(chunks)}")
+
+
+
+# 3. LOAD EMBEDDING MODEL
+
+
+print("\nLoading embedding model...")
+
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+
+
+
+# 4. CREATE / LOAD FAISS INDEX
+
+
+index_path = "faiss_index"
+
+if os.path.exists(index_path):
+
+    print("\nLoading saved FAISS index (FAST)...")
+
+    vector_store = FAISS.load_local(
+        index_path,
+        embeddings,
+        allow_dangerous_deserialization=True
+    )
+
+else:
+
+    print("\nCreating FAISS index (First time only, may take few minutes)...")
+
+    vector_store = FAISS.from_documents(chunks, embeddings)
+
+    vector_store.save_local(index_path)
+
+    print("FAISS index saved successfully!")
+
+
+print("\nRAG System Ready!")
+
+
+
+# 5. QUERY LOOP
+
+
+while True:
+
+    query = input("\nEnter your query (type exit to stop): ").strip()
+
+    if query.lower() == "exit":
+
+        print("Exiting system...")
+
+        break
+
+
+    if query == "":
+
+        print("Please enter a valid query.")
+
+        continue
+
+
+    print("\nSearching...\n")
+
+
+    results = vector_store.similarity_search(query, k=12)
+
+
+    # Remove duplicates
+    seen = set()
+
+    main_points = []
+
+
+    for doc in results:
+
+        text = doc.page_content.strip()
+
+        first_sentence = text.split(".")[0].strip()
+
+
+        if first_sentence not in seen and len(first_sentence) > 20:
+
+            seen.add(first_sentence)
+
+            main_points.append(first_sentence)
+
+
+        if len(main_points) == 8:
+
+            break
+
+
+    print("Main Points:\n")
+
+
+    if len(main_points) == 0:
+
+        print("No relevant information found.")
+
+
+    else:
+
+        for i, point in enumerate(main_points, 1):
+
+            print(f"{i}. {point}.")
+
+
+    print("\nDone.")
