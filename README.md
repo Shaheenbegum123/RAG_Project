@@ -1,4 +1,4 @@
-# RAG Project 
+# AI Based Document Search and Knowledge Retrieval with Conversational Interface 
 
 ## Overview
 
@@ -6,18 +6,18 @@ This project is a Retrieval Augmented Generation (RAG) system that allows users 
 
 The system uses:
 
-* Python
-* LangChain
-* HuggingFace Embeddings
-* FAISS Vector Database
-* Sentence Transformers
+Python
+LangChain
+HuggingFace Embeddings
+FAISS Vector Database
+Sentence Transformers
 
 ---
 
 ## Project Folder Structure
 
 ```
-RAG_Project/
+AI_Document_Search_Project/
 │
 ├── Main.py
 ├── requirements.txt
@@ -38,11 +38,8 @@ RAG_Project/
 Open Command Prompt and run:
 
 ```
-git clone https://github.com/YOUR_USERNAME/RAG_Project.git
-```
-
-```
-cd RAG_Project
+git clone https://github.com/YOUR_USERNAME/AI_Document_Search_Project.git
+cd AI_Document_Search_Project
 ```
 
 ---
@@ -106,14 +103,14 @@ Output:
 ```
 Main Points:
 
-• Machine learning learns from data
-• It improves automatically
-• Used in AI applications
-• Helps in prediction
-• Used in real-world systems
-• Improves performance with experience
-• Works using algorithms
-• Used in many industries
+• Machine learning learns from data  
+• It improves automatically  
+• Used in AI applications  
+• Helps in prediction  
+• Used in real-world systems  
+• Improves performance with experience  
+• Works using algorithms  
+• Used in many industries  
 ```
 
 ---
@@ -132,8 +129,8 @@ exit
 
 First time running may take few minutes because:
 
-* Embedding model downloads
-* FAISS index creates
+Embedding model downloads
+FAISS index creates
 
 After first run, execution becomes fast.
 
@@ -151,24 +148,28 @@ pip freeze > requirements.txt
 
 ## Technologies Used
 
-* Python
-* LangChain
-* HuggingFace
-* FAISS
-* Sentence Transformers
+Python
+LangChain
+HuggingFace
+FAISS
+Sentence Transformers
 
 ---
+
 ## Features
 
-* Supports multiple PDFs
-* Fast FAISS search
-* Main points output
-* Interactive query system
+Supports multiple PDFs
 
-  ---
+Fast FAISS search
+
+Main points output
+
+Interactive query system
+
+---
 
 ## Author
 
 Name: Shaheen Begum
 
-Project: Infosys Springboard RAG Project
+Project: Infosys Springboard Project
