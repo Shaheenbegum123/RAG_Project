@@ -8,9 +8,7 @@ os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-
-
+from langchain_community.vectorstores import Chroma
 
 # 1. LOAD MULTIPLE PDFs
 
@@ -19,7 +17,6 @@ pdf_files = [
     "Books/Introduction to Machine Learning with Python ( PDFDrive.com )-min.pdf",
     "Books/Practical Machine Learning with Python.pdf"
 ]
-
 docs = []
 
 print("Loading PDFs...")
@@ -34,7 +31,6 @@ for pdf in pdf_files:
 
 print(f"\nTotal pages loaded: {len(docs)}")
 
-
 # 2. SPLIT INTO CHUNKS
 
 print("\nSplitting documents...")
@@ -48,10 +44,7 @@ chunks = text_splitter.split_documents(docs)
 
 print(f"Total chunks created: {len(chunks)}")
 
-
-
 # 3. LOAD EMBEDDING MODEL
-
 
 print("\nLoading embedding model...")
 
@@ -59,40 +52,38 @@ embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
+# 4. CREATE / LOAD CHROMA DATABASE
 
+db_path = "chroma_db"
 
-# 4. CREATE / LOAD FAISS INDEX
+if os.path.exists(db_path):
 
+    print("\nLoading saved Chroma database (FAST)...")
 
-index_path = "faiss_index"
-
-if os.path.exists(index_path):
-
-    print("\nLoading saved FAISS index (FAST)...")
-
-    vector_store = FAISS.load_local(
-        index_path,
-        embeddings,
-        allow_dangerous_deserialization=True
+    vector_store = Chroma(
+        persist_directory=db_path,
+        embedding_function=embeddings
     )
 
 else:
 
-    print("\nCreating FAISS index (First time only, may take few minutes)...")
+    print("\nCreating Chroma database (First time only, may take few minutes)...")
 
-    vector_store = FAISS.from_documents(chunks, embeddings)
+    vector_store = Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory=db_path
+    )
 
-    vector_store.save_local(index_path)
+    vector_store.persist()
 
-    print("FAISS index saved successfully!")
+    print("Chroma database saved successfully!")
 
 
 print("\nRAG System Ready!")
 
 
-
 # 5. QUERY LOOP
-
 
 while True:
 
@@ -101,14 +92,12 @@ while True:
     if query.lower() == "exit":
 
         print("Exiting system...")
-
         break
 
 
     if query == "":
 
         print("Please enter a valid query.")
-
         continue
 
 
@@ -149,7 +138,6 @@ while True:
     if len(main_points) == 0:
 
         print("No relevant information found.")
-
 
     else:
 
