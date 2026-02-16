@@ -5,12 +5,11 @@
 This project is a Retrieval Augmented Generation (RAG) system that allows users to ask questions from multiple PDF books and get answers in main points.
 
 The system uses:
-
-Python
-LangChain
-HuggingFace Embeddings
-FAISS Vector Database
-Sentence Transformers
+• Python
+• LangChain
+• HuggingFace Embeddings
+• FAISS Vector Database
+• Sentence Transformers
 
 ---
 
@@ -148,28 +147,17 @@ pip freeze > requirements.txt
 
 ## Technologies Used
 
-Python
-LangChain
-HuggingFace
-FAISS
-Sentence Transformers
+• Python
+• LangChain
+• HuggingFace
+• FAISS 
+• Sentence Transformers
 
 ---
 
 ## Features
 
-Supports multiple PDFs
-
-Fast FAISS search
-
-Main points output
-
-Interactive query system
-
----
-
-## Author
-
-Name: Shaheen Begum
-
-Project: Infosys Springboard Project
+• Supports multiple PDFs
+• Fast FAISS search
+• Main points output
+• Interactive query system
